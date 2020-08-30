@@ -26,14 +26,20 @@ public class Programa {
         arq.inserirArryList(P);
         M = new Stack();
         i = 0;
-        s = 0;
     }
-    
-    public void soma(){
-        int value; 
-        value = (int) M.get(s);// + M.get(s-1);
-        M.set((s-1), value); 
-        s= s - 1;
+    //ADD (Somar):
+    //M[s-1]:=M[s-1] + M[s]; s:=s - 1
+    public void add(){
+        int value = Integer.parseInt(M.get(s-1).toString())+ Integer.parseInt(M.get(s).toString());
+        M.set(s-1, value);
+        this.s--;
+    }
+    //SUB (Subtrair):
+    //M[s-1]:=M[s-1] - M[s]; s:=s - 1
+    public void sub(){
+        int value = Integer.parseInt(M.get(s-1).toString())- Integer.parseInt(M.get(s).toString());
+        M.set(s-1, value);
+        this.s--;
     }
     public void start(){
         this.s = -1;
@@ -43,6 +49,12 @@ public class Programa {
     public void ldc(int k){
         this.s++;
         M.add(s, k);
+    }
+    //LDV n (Carregar valor):
+    //S:=s + 1 ; M[s]:=M[n] 
+    public void ldv(int n){
+        this.s++;
+         M.add(s, M.get(n));
     }
     
     public Stack debug(int numeroInstrucao){
@@ -56,7 +68,19 @@ public class Programa {
             if(linha[0].equals("LDC")){
                 ldc(Integer.parseInt(linha[1]));
             }else{
-            
+                if(linha[0].equals("LDV")){
+                    ldv(Integer.parseInt(linha[1]));
+                }else{
+                    if(linha[0].equals("ADD")){
+                        add();
+                    }else{
+                        if(linha[0].equals("SUB")){
+                            sub();
+                        }else{
+                         
+                        }  
+                    }
+                }
             }
         }
         System.out.println(M);

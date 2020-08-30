@@ -36,7 +36,12 @@ public class Arquivo {
         String txt = "";
         while(linha != null) {
             //System.out.println(linha);
-            txt += i +" "+ linha+"\n";
+            if(i<10){
+                txt += i +"   |   "+ linha+"\n";
+            }else{
+                txt += i +" |   "+ linha+"\n";
+            }
+            
             linha = br.readLine();
             i++;
         }
