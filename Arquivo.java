@@ -11,7 +11,6 @@ import java.io.*;
  *
  * @author Dell
  */
-//Serialized??????
 public class Arquivo {
     protected String nome;
     
@@ -26,24 +25,9 @@ public class Arquivo {
     public String getNome(){
 	return nome;		
     } 
-   
-    public Pilha colocaNaPilha() throws FileNotFoundException, IOException{
-        FileInputStream stream = new FileInputStream(nome);
-        InputStreamReader reader = new InputStreamReader(stream);
-        BufferedReader br = new BufferedReader(reader);
-        
-        Pilha s = new Pilha();
-        String linha = br.readLine();
-        
-        while(linha != null) {
-            //System.out.println(linha);
-            s.empilhar(linha);
-            linha = br.readLine();
-        }
-        return s;
-    }
     
     public String imprimir() throws FileNotFoundException, IOException{
+        int i = 1;
         FileInputStream stream = new FileInputStream(nome);
         InputStreamReader reader = new InputStreamReader(stream);
         BufferedReader br = new BufferedReader(reader);
@@ -52,9 +36,21 @@ public class Arquivo {
         String txt = "";
         while(linha != null) {
             //System.out.println(linha);
-            txt += linha+"/n";
+            txt += i +" "+ linha+"\n";
             linha = br.readLine();
+            i++;
         }
         return txt;
+    }
+    public void inserirArryList(Codigo c) throws FileNotFoundException, IOException{
+        FileInputStream stream = new FileInputStream(nome);
+        InputStreamReader reader = new InputStreamReader(stream);
+        BufferedReader br = new BufferedReader(reader);
+        
+        String l = br.readLine();
+        while(l != null) {
+            c.inserir(l);
+            l = br.readLine();
+        }
     }
 }

@@ -5,6 +5,7 @@
  */
 package maquinavirtual;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     /**
      * Creates new form MaquinaVirtualFrame
      */
+    Programa prog;
     public FrameMaquinaVirtual() {
         initComponents();
     }
@@ -37,24 +39,29 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         nomeArqTxtField = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        programaTxtArea = new javax.swing.JTextPane();
+        ErroDialog = new javax.swing.JDialog();
+        msgErroLabel = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         saidaTxtArea = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        enviarBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        codigoTxtArea = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        memoriaTxtArea = new javax.swing.JTextArea();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        bugTxtArea = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
+        debugMenu = new javax.swing.JMenu();
+        runMenu = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -103,30 +110,66 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
+        ErroDialog.setTitle("Erro");
+
+        javax.swing.GroupLayout ErroDialogLayout = new javax.swing.GroupLayout(ErroDialog.getContentPane());
+        ErroDialog.getContentPane().setLayout(ErroDialogLayout);
+        ErroDialogLayout.setHorizontalGroup(
+            ErroDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ErroDialogLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addComponent(msgErroLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+        ErroDialogLayout.setVerticalGroup(
+            ErroDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ErroDialogLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(msgErroLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE)
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Máquina Virtual");
         setName("maquinaVirtualFrame"); // NOI18N
-
-        jTextPane1.setEditable(false);
-        jScrollPane1.setViewportView(jTextPane1);
-
-        programaTxtArea.setEditable(false);
-        jScrollPane2.setViewportView(programaTxtArea);
+        setResizable(false);
 
         saidaTxtArea.setEditable(false);
         saidaTxtArea.setColumns(20);
         saidaTxtArea.setRows(5);
         jScrollPane3.setViewportView(saidaTxtArea);
 
-        jLabel1.setText("Código-fonte");
-
-        jLabel2.setText("Memória");
-
         jLabel3.setText("Entrada");
 
         jLabel4.setText("Saída");
 
-        jButton1.setText("Enviar");
+        enviarBtn.setText("Enviar");
+        enviarBtn.setEnabled(false);
+
+        codigoTxtArea.setEditable(false);
+        codigoTxtArea.setColumns(20);
+        codigoTxtArea.setRows(5);
+        jScrollPane1.setViewportView(codigoTxtArea);
+
+        memoriaTxtArea.setEditable(false);
+        memoriaTxtArea.setColumns(20);
+        memoriaTxtArea.setRows(5);
+        jScrollPane2.setViewportView(memoriaTxtArea);
+
+        bugTxtArea.setColumns(20);
+        bugTxtArea.setRows(5);
+        jScrollPane6.setViewportView(bugTxtArea);
+
+        jButton1.setText("Adicionar bug");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Código");
+
+        jLabel2.setText("Memória");
 
         jMenu1.setText("Arquivo");
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -147,11 +190,18 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
         jMenu2.setText("Executar");
 
-        jMenu4.setText("Debug");
-        jMenu2.add(jMenu4);
+        debugMenu.setText("Debug");
+        debugMenu.setEnabled(false);
+        debugMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                debugMenuMouseClicked(evt);
+            }
+        });
+        jMenu2.add(debugMenu);
 
-        jMenu5.setText("Run");
-        jMenu2.add(jMenu5);
+        runMenu.setText("Run");
+        runMenu.setEnabled(false);
+        jMenu2.add(runMenu);
 
         jMenuBar1.add(jMenu2);
 
@@ -164,50 +214,61 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTextField1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(enviarBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)))
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(jLabel2)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 5, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(enviarBtn))
                 .addGap(12, 12, 12)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(27, 27, 27))))
         );
 
         pack();
@@ -228,17 +289,41 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        // TODO add your handling code here:
-        //C:/Users/Dell/Documents/NetBeansProjects/MaquinaVirtual/src/maquinavirtual/programa.asm
-        Arquivo arq = new Arquivo(nomeArqTxtField.getText());
         try {
-            programaTxtArea.setText(arq.imprimir());
+            //C:/Users/Dell/Documents/NetBeansProjects/MaquinaVirtual/src/maquinavirtual/programa.asm
+            prog = new Programa(nomeArqTxtField.getText());
+            codigoTxtArea.setText(prog.arq.imprimir());
+                //codigoTable.setValueAt(prog.P.getValue(i), i, 1);//obj, linha , coluna
+                //Object[] data = {null, prog.P.getValue(i)};
+            
+            
+            debugMenu.setEnabled(true);
+            runMenu.setEnabled(true);
+            enviarBtn.setEnabled(true);
+            nomeArqTxtField.setText("");
+            abrirArqDialog.setVisible(false);
+        } catch (FileNotFoundException ex) {
+            ErroDialog.setVisible(true);
+            ErroDialog.setSize(350, 150);
+            msgErroLabel.setText("Arquivo não encontrado! Tente novamente.");
+            saidaTxtArea.setText("Arquivo não encontrado! Tente novamente.");
         } catch (IOException ex) {
             Logger.getLogger(FrameMaquinaVirtual.class.getName()).log(Level.SEVERE, null, ex);
         }
-        nomeArqTxtField.setText("");
-        abrirArqDialog.setVisible(false);
+        
+        
     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void debugMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_debugMenuMouseClicked
+        // TODO add your handling code here:
+        
+        memoriaTxtArea.setText(prog.debug(prog.i).toString());
+        //prog.debug(prog.i);
+    }//GEN-LAST:event_debugMenuMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -272,12 +357,18 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new FrameMaquinaVirtual().setVisible(true);
+                
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog ErroDialog;
     private javax.swing.JDialog abrirArqDialog;
+    private javax.swing.JTextArea bugTxtArea;
+    private javax.swing.JTextArea codigoTxtArea;
+    private javax.swing.JMenu debugMenu;
+    private javax.swing.JButton enviarBtn;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -288,18 +379,18 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JTextArea memoriaTxtArea;
+    private javax.swing.JLabel msgErroLabel;
     private javax.swing.JTextField nomeArqTxtField;
-    private javax.swing.JTextPane programaTxtArea;
+    private javax.swing.JMenu runMenu;
     private javax.swing.JTextArea saidaTxtArea;
     // End of variables declaration//GEN-END:variables
 }
