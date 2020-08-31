@@ -17,6 +17,7 @@ public class Programa {
     Codigo P;
     Arquivo arq;
     int i, s;
+    Object imprime;
     //i = posicao; s = top
  
     public Programa(String nomeArq) throws IOException{
@@ -25,8 +26,9 @@ public class Programa {
         arq.inserirArryList(P);
         M = new Stack();
         i = 0;
+        imprime = "x";
     }
-	
+    
     //ADD (Somar):
     //M[s-1]:=M[s-1] + M[s]; s:=s - 1
     public void add(){
@@ -183,8 +185,54 @@ public class Programa {
         this.s++;
          M.add(s, M.get(n));
     }
-    
-     public Stack debug(int numeroInstrucao){
+    //STR n (Armazenar valor):
+    //M[n]:=M[s]; s:=s-1 
+    public void str(int n){
+        M.set(n, M.get(s));
+        this.s--;
+    }
+    //JMP t (Desviar sempre):
+    //i:= t 
+    public void jmp(String t){
+        for(int j = 0; j<P.getTamanho(); j++){
+            String[] linha = P.getValue(j).split(" ");
+            if(t.equals(linha[0])){
+                this.i = j;
+            }
+        }
+        //System.out.println(i);
+    }
+    //JMPF t (Desviar se falso):
+    //se M[s] = 0 então i:=t senão i:=i + 1;
+    //s:=s-1
+    public void jmpf(String t){
+        if(M.get(s).equals(0)){
+            for(int j = 0; j<P.getTamanho(); j++){
+                String[] linha = P.getValue(j).split(" ");
+                if(t.equals(linha[0])){
+                    this.i = j;
+                }
+            }
+        }
+        this.s--;
+        System.out.println(i);
+    }
+    //RD (Leitura):
+    //S:=s + 1; M[s]:= “próximo valor de entrada”. 
+    public Stack rd(int valor){
+        this.s++;
+        M.add(s, valor);
+        this.i++;
+        return M;
+    }
+    //PRN (Impressão):
+    //“Imprimir M[s]”; s:=s-1 
+    public void prn(){
+        imprime = M.get(s);
+        this.s--;
+        this.i++;
+    }
+    public Stack debug(int numeroInstrucao){
         String[] linha = P.getValue(numeroInstrucao).split(" ");
         //int tamanhoLinha = linha.length;
         System.out.println(linha[0]);
@@ -243,6 +291,23 @@ public class Programa {
                                                                             if(linha[0].equals("HLT")){
                                                                                 hlt();
                                                                             }else{
+                                                                                if(linha[0].equals("STR")){
+                                                                                    str(Integer.parseInt(linha[1]));
+                                                                                }else{
+                                                                                    if(linha[0].equals("JMP")){
+                                                                                        jmp(linha[1]);
+                                                                                    }else{
+                                                                                        if(linha[0].equals("JMPF")){
+                                                                                            jmpf(linha[1]);
+                                                                                        }else{
+                                                                                            if(linha[0].equals("PRN")){
+                                                                                                prn();
+                                                                                            }else{
+                                                                                            
+                                                                                            }  
+                                                                                        }
+                                                                                    }
+                                                                                }
                                                                             }
                                                                         }
                                                                     }

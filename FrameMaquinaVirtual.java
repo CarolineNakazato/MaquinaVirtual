@@ -41,7 +41,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         ErroDialog = new javax.swing.JDialog();
         msgErroLabel = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        entradaTxtField = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         saidaTxtArea = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
@@ -58,8 +58,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        abrirArquivoMenu = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         debugMenu = new javax.swing.JMenu();
         runMenu = new javax.swing.JMenu();
@@ -146,6 +145,16 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
         enviarBtn.setText("Enviar");
         enviarBtn.setEnabled(false);
+        enviarBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                enviarBtnMouseClicked(evt);
+            }
+        });
+        enviarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enviarBtnActionPerformed(evt);
+            }
+        });
 
         codigoTxtArea.setEditable(false);
         codigoTxtArea.setColumns(20);
@@ -175,22 +184,13 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
         jLabel6.setText("Número da linha de parada");
 
-        jMenu1.setText("Arquivo");
-        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+        abrirArquivoMenu.setText("Arquivo");
+        abrirArquivoMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu1MouseClicked(evt);
+                abrirArquivoMenuMouseClicked(evt);
             }
         });
-
-        jMenu3.setText("Abrir Arquivo");
-        jMenu3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu3ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenu3);
-
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(abrirArquivoMenu);
 
         jMenu2.setText("Executar");
 
@@ -222,7 +222,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jScrollPane2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(entradaTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(enviarBtn)
                         .addGroup(layout.createSequentialGroup()
@@ -252,7 +252,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(entradaTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(enviarBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -271,15 +271,11 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
-        
-    }//GEN-LAST:event_jMenu3ActionPerformed
-
-    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+    private void abrirArquivoMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_abrirArquivoMenuMouseClicked
         // TODO add your handling code here:
-     abrirArqDialog.setVisible(true);
-     abrirArqDialog.setSize(350, 150);
-    }//GEN-LAST:event_jMenu1MouseClicked
+        abrirArqDialog.setVisible(true);
+        abrirArqDialog.setSize(350, 150);
+    }//GEN-LAST:event_abrirArquivoMenuMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -293,10 +289,11 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
             debugMenu.setEnabled(true);
             runMenu.setEnabled(true);
-            enviarBtn.setEnabled(true);
+            abrirArquivoMenu.setEnabled(false);
             addParadaBtn.setEnabled(true);
             nomeArqTxtField.setText("");
             abrirArqDialog.setVisible(false);
+            jButton2.setEnabled(false);
         } catch (FileNotFoundException ex) {
             ErroDialog.setVisible(true);
             ErroDialog.setSize(350, 150);
@@ -311,14 +308,40 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
     private void debugMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_debugMenuMouseClicked
         // TODO add your handling code here:
-        
-        memoriaTxtArea.setText(prog.debug(prog.i).toString());
+        if(prog.P.getValue(prog.i).equals("RD")){
+            debugMenu.setEnabled(false);
+            runMenu.setEnabled(false);
+            enviarBtn.setEnabled(true);
+            saidaTxtArea.setText("Digite o valor de entrada desejado (apenas números).");
+        }else{
+            memoriaTxtArea.setText(prog.debug(prog.i).toString());
+            if(!prog.imprime.equals("x")){
+                saidaTxtArea.setText(prog.imprime.toString());
+                prog.imprime = "x";
+            }
+        }
         //prog.debug(prog.i);
     }//GEN-LAST:event_debugMenuMouseClicked
 
     private void addParadaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addParadaBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_addParadaBtnActionPerformed
+
+    private void enviarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_enviarBtnActionPerformed
+
+    private void enviarBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_enviarBtnMouseClicked
+        // TODO add your handling code here:
+        if(entradaTxtField.getText().equals("")){
+            saidaTxtArea.setText("Digite o valor de entrada desejado (apenas números).");
+        }else{
+            memoriaTxtArea.setText(prog.rd(Integer.parseInt(entradaTxtField.getText())).toString());
+            enviarBtn.setEnabled(false);
+            debugMenu.setEnabled(true);
+            runMenu.setEnabled(true);
+        }
+    }//GEN-LAST:event_enviarBtnMouseClicked
 
     /**
      * @param args the command line arguments
@@ -360,10 +383,12 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog ErroDialog;
     private javax.swing.JDialog abrirArqDialog;
+    private javax.swing.JMenu abrirArquivoMenu;
     private javax.swing.JButton addParadaBtn;
     private javax.swing.JTextArea bugTxtArea;
     private javax.swing.JTextArea codigoTxtArea;
     private javax.swing.JMenu debugMenu;
+    private javax.swing.JTextField entradaTxtField;
     private javax.swing.JButton enviarBtn;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -372,9 +397,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
@@ -382,7 +405,6 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextArea memoriaTxtArea;
     private javax.swing.JLabel msgErroLabel;
     private javax.swing.JTextField nomeArqTxtField;
