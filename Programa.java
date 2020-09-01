@@ -230,7 +230,6 @@ public class Programa {
     public void prn(){
         imprime = M.get(s);
         this.s--;
-        this.i++;
     }
     public Stack debug(int numeroInstrucao){
         String[] linha = P.getValue(numeroInstrucao).split(" ");

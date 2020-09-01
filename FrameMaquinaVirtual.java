@@ -52,8 +52,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         memoriaTxtArea = new javax.swing.JTextArea();
         jScrollPane6 = new javax.swing.JScrollPane();
-        bugTxtArea = new javax.swing.JTextArea();
-        addParadaBtn = new javax.swing.JButton();
+        nLinhaTxtArea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -166,17 +165,9 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
         memoriaTxtArea.setRows(5);
         jScrollPane2.setViewportView(memoriaTxtArea);
 
-        bugTxtArea.setColumns(20);
-        bugTxtArea.setRows(5);
-        jScrollPane6.setViewportView(bugTxtArea);
-
-        addParadaBtn.setText("Adicionar parada");
-        addParadaBtn.setEnabled(false);
-        addParadaBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addParadaBtnActionPerformed(evt);
-            }
-        });
+        nLinhaTxtArea.setColumns(20);
+        nLinhaTxtArea.setRows(5);
+        jScrollPane6.setViewportView(nLinhaTxtArea);
 
         jLabel1.setText("Linha |  Código");
 
@@ -205,6 +196,11 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
         runMenu.setText("Run");
         runMenu.setEnabled(false);
+        runMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                runMenuMouseClicked(evt);
+            }
+        });
         jMenu2.add(runMenu);
 
         jMenuBar1.add(jMenu2);
@@ -230,10 +226,9 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel4))
                             .addGap(18, 18, 18)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane6)
-                                .addComponent(jLabel6)
-                                .addComponent(addParadaBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel6))))
                     .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -259,12 +254,9 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addParadaBtn)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane6))
                 .addContainerGap())
         );
 
@@ -290,7 +282,6 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
             debugMenu.setEnabled(true);
             runMenu.setEnabled(true);
             abrirArquivoMenu.setEnabled(false);
-            addParadaBtn.setEnabled(true);
             nomeArqTxtField.setText("");
             abrirArqDialog.setVisible(false);
             jButton2.setEnabled(false);
@@ -308,24 +299,25 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
 
     private void debugMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_debugMenuMouseClicked
         // TODO add your handling code here:
-        if(prog.P.getValue(prog.i).equals("RD")){
+        if(prog.i < prog.P.getTamanho()){
+            if(prog.P.getValue(prog.i).equals("RD")){
+                debugMenu.setEnabled(false);
+                runMenu.setEnabled(false);
+                enviarBtn.setEnabled(true);
+                saidaTxtArea.setText("Digite o valor de entrada desejado (apenas números).");
+            }else{
+                memoriaTxtArea.setText(prog.debug(prog.i).toString());
+                if(!prog.imprime.equals("x")){
+                    saidaTxtArea.setText(prog.imprime.toString());
+                    prog.imprime = "x";
+                }
+            }
+        }else{
             debugMenu.setEnabled(false);
             runMenu.setEnabled(false);
-            enviarBtn.setEnabled(true);
-            saidaTxtArea.setText("Digite o valor de entrada desejado (apenas números).");
-        }else{
-            memoriaTxtArea.setText(prog.debug(prog.i).toString());
-            if(!prog.imprime.equals("x")){
-                saidaTxtArea.setText(prog.imprime.toString());
-                prog.imprime = "x";
-            }
         }
         //prog.debug(prog.i);
     }//GEN-LAST:event_debugMenuMouseClicked
-
-    private void addParadaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addParadaBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_addParadaBtnActionPerformed
 
     private void enviarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarBtnActionPerformed
         // TODO add your handling code here:
@@ -342,6 +334,47 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
             runMenu.setEnabled(true);
         }
     }//GEN-LAST:event_enviarBtnMouseClicked
+
+    private void runMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_runMenuMouseClicked
+        // TODO add your handling code here:
+        //C:/Users/Dell/Documents/NetBeansProjects/MaquinaVirtual/src/maquinavirtual/teste.asm
+        int ultimo = prog.P.getTamanho();
+        if(!nLinhaTxtArea.getText().equals("")){
+            String[] parada = nLinhaTxtArea.getText().split(",");
+            int qtdParada = parada.length;
+
+            System.out.println("ultimo = "+ultimo);
+            for(int j = 0; j<qtdParada; j++){
+                System.out.println("i = "+prog.i);
+                if((Integer.parseInt(parada[j])-1<ultimo)&&(Integer.parseInt(parada[j])-1>prog.i)){
+                    ultimo = Integer.parseInt(parada[j])-1;
+                    System.out.println("parada["+j+"] = "+parada[j]);
+                    System.out.println("ultimo = "+ultimo);
+                }
+            }
+        }
+        System.out.println("ultimo = "+ultimo);
+        while(prog.i < ultimo){
+            
+           
+            if(prog.P.getValue(prog.i).equals("RD")){
+                debugMenu.setEnabled(false);
+                runMenu.setEnabled(false);
+                enviarBtn.setEnabled(true);
+                saidaTxtArea.setText("Digite o valor de entrada desejado (apenas números).");
+            }else{
+                memoriaTxtArea.setText(prog.debug(prog.i).toString());
+                if(!prog.imprime.equals("x")){
+                    saidaTxtArea.setText(prog.imprime.toString());
+                    prog.imprime = "x";
+                }
+            }
+        }
+        if(prog.i >= prog.P.getTamanho()){
+            debugMenu.setEnabled(false);
+            runMenu.setEnabled(false);
+        }
+    }//GEN-LAST:event_runMenuMouseClicked
 
     /**
      * @param args the command line arguments
@@ -384,8 +417,6 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     private javax.swing.JDialog ErroDialog;
     private javax.swing.JDialog abrirArqDialog;
     private javax.swing.JMenu abrirArquivoMenu;
-    private javax.swing.JButton addParadaBtn;
-    private javax.swing.JTextArea bugTxtArea;
     private javax.swing.JTextArea codigoTxtArea;
     private javax.swing.JMenu debugMenu;
     private javax.swing.JTextField entradaTxtField;
@@ -407,6 +438,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTextArea memoriaTxtArea;
     private javax.swing.JLabel msgErroLabel;
+    private javax.swing.JTextArea nLinhaTxtArea;
     private javax.swing.JTextField nomeArqTxtField;
     private javax.swing.JMenu runMenu;
     private javax.swing.JTextArea saidaTxtArea;
