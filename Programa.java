@@ -223,6 +223,7 @@ public class Programa {
         this.s++;
         M.add(s, valor);
         this.i++;
+         System.out.println("RD"+M);
         return M;
     }
     //PRN (Impressão):

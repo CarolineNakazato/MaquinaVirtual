@@ -20,6 +20,7 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
      * Creates new form MaquinaVirtualFrame
      */
     Programa prog;
+    int parada = 0;
     public FrameMaquinaVirtual() {
         initComponents();
     }
@@ -332,6 +333,8 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
             enviarBtn.setEnabled(false);
             debugMenu.setEnabled(true);
             runMenu.setEnabled(true);
+            parada = 0;
+            System.out.println("parada aqui = "+parada);
         }
     }//GEN-LAST:event_enviarBtnMouseClicked
 
@@ -353,11 +356,15 @@ public class FrameMaquinaVirtual extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("ultimo = "+ultimo);
-        while(prog.i < ultimo){
-            
-           
+        //System.out.println("ultimo = "+ultimo);
+        System.out.println("parada = "+parada);
+        while((prog.i < ultimo)&&(parada==0)){
+           System.out.println("ultimo = "+ultimo);
+           System.out.println("entrou 1");
             if(prog.P.getValue(prog.i).equals("RD")){
+                parada = 1;
+                
+                System.out.println("entrou 2");
                 debugMenu.setEnabled(false);
                 runMenu.setEnabled(false);
                 enviarBtn.setEnabled(true);

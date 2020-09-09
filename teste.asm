@@ -2,5 +2,6 @@ START
 LDC 0
 LDC 2
 LDC 4
+RD
 PRN
 HLT 
